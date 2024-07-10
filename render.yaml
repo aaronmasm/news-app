@@ -1,0 +1,22 @@
+databases:
+  - name: news-db  # Nombre de la base de datos en Render
+    plan: free
+    databaseName: news_db_0am6  # Nombre de la base de datos real
+    user: news_db_0am6_user  # Usuario de la base de datos
+
+services:
+  - type: web
+    plan: free
+    name: news-app  # Nombre del servicio
+    runtime: python
+    buildCommand: "./build.sh"
+    startCommand: "python -m gunicorn django_project.asgi:application -k uvicorn.workers.UvicornWorker"
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: news-db  # Debe coincidir con el nombre de la base de datos definida anteriormente
+          property: connectionString
+      - key: SECRET_KEY
+        generateValue: true
+      - key: WEB_CONCURRENCY
+        value: 4
