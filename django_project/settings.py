@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 import os
 from pathlib import Path
 
+import dj_database_url
 from environs import Env
 
 env = Env()
@@ -91,8 +92,11 @@ WSGI_APPLICATION = "django_project.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-DATABASES = {"default": env.dj_db_url("DATABASE_URL")}
-
+DATABASES = {
+    "default": dj_database_url.config(
+        default=env.dj_db_url("DATABASE_URL"), conn_max_age=600
+    )
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
